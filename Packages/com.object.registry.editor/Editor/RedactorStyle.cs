@@ -102,8 +102,8 @@ namespace ObjectRegistryEditor
         private static GUIStyle CreateButtonStyle(string _normal, string _active = null)
         {
             GUIStyle _style = new GUIStyle();
-            if (_normal != null) _style.normal.background = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Editor/Img/" + _normal + ".png");// Resources.Load("Editor/"+_normal) as Texture2D;
-            if (_active != null) _style.active.background = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Editor/Img/" + _active + ".png");// Resources.Load("Editor/"+_active) as Texture2D;
+            if (_normal != null) _style.normal.background = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.object.registry.editor/Editor/Img/" + _normal + ".png");// Resources.Load("Editor/"+_normal) as Texture2D;
+            if (_active != null) _style.active.background = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.object.registry.editor/Editor/Img/" + _active + ".png");// Resources.Load("Editor/"+_active) as Texture2D;
             return _style;
         }
 
