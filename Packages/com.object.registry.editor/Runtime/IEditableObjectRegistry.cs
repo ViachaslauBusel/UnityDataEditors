@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ObjectRegistryEditor
 {
-    internal interface IEditableObjectRegistry
+    public interface IEditableObjectRegistry
     {
         public IEditableObject this[int index] { get; }
         int Count { get; }

@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -264,4 +263,3 @@ namespace ObjectRegistryEditor
         }
     }
 }
-#endif

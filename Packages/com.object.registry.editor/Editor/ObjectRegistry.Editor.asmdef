@@ -1,0 +1,16 @@
+{
+    "name": "ObjectRegistry.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:48c9e6dfa3ca94d4981e3374c1a6143f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
