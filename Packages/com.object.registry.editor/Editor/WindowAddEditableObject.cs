@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using ObjectRegistryEditor.Tools;
 using System;
 using System.Linq;
@@ -72,4 +71,3 @@ namespace ObjectRegistryEditor
         void OnGUI();
     }
 }
-#endif

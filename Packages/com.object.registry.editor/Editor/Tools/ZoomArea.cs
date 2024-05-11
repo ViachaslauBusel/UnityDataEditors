@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using static UnityEditor.GenericMenu;
 
@@ -184,4 +183,3 @@ namespace ObjectRegistryEditor
         }
     }
 }
-#endif
