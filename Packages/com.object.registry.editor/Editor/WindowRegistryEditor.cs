@@ -179,6 +179,12 @@ namespace ObjectRegistryEditor
         private void Save() {
             if (_editableRegistry == null) return;
             AssetDatabase.Refresh();
+
+            for(int i = 0; i < _editableRegistry.Count; i++)
+            {
+                EditorUtility.SetDirty((ScriptableObject)_editableRegistry[i]);
+            }
+
             EditorUtility.SetDirty((ScriptableObject)_editableRegistry);
             AssetDatabase.SaveAssets();
         }
