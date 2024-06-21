@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea879d758163e6f4992ba3ca58348854, type: 3}
   m_Name: TestRegistry
   m_EditorClassIdentifier: 
-  _objects: []
+  _objects:
+  - {fileID: 11400000, guid: 300915ca65333ba4883c52b8ec51b2b2, type: 2}
   _generatorID: 0

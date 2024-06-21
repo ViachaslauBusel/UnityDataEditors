@@ -10,7 +10,7 @@ namespace ObjectRegistryEditor
 {
     public class WindowAddObject : EditorWindow
     {
-        private IGenericWindow m_genericWindow;
+        private IGenericWindow _genericWindow;
         /// <summary>
         /// Открыть окно для выбора объекта который наследуются от interface T
         /// </summary>
@@ -20,12 +20,12 @@ namespace ObjectRegistryEditor
             WindowAddObject window = EditorWindow.GetWindow<WindowAddObject>(true, "ADD");
             window.minSize = new Vector2(300.0f, 500.0f);
             GenericWindowAddObject<T> genericWindow = new GenericWindowAddObject<T>(action, window);
-            window.m_genericWindow = genericWindow;
+            window._genericWindow = genericWindow;
 
         }
         private void OnGUI()
         {
-            m_genericWindow?.OnGUI();
+            _genericWindow?.OnGUI();
         }
     }
 
