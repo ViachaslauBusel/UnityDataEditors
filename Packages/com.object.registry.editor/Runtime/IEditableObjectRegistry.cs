@@ -11,8 +11,9 @@ namespace ObjectRegistryEditor
         public IEditableObject this[int index] { get; }
         int Count { get; }
 
-        IEditableObject AddObject();
+        IEditableObject AddObjectOfType(Type type);
         void RemoveObject(IEditableObject oBJ);
         void Export();
+        Type GetObjectType();
     }
 }

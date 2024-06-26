@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ObjectRegistryEditor.SelectorWindow;
+using System;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -193,11 +195,22 @@ namespace ObjectRegistryEditor
 
         }
         /// <summary>
-        /// Создание нового обьекта
+        /// Create new object
         /// </summary>
-        private void CreateObject() {
-            IEditableObject obj = _editableRegistry.AddObject();
-            SelectObject(obj);
+        private void CreateObject()
+        {
+            var findType = _editableRegistry.GetObjectType();
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                                               .SelectMany(i => i.GetTypes())
+                                               .Where(i => findType.IsAssignableFrom(i) && i.IsClass && !i.IsAbstract)
+                                               .ToList();
+
+            if(types.Count == 1)
+            {
+                var obj = _editableRegistry.AddObjectOfType(types[0]);
+                SelectObject(obj);
+            }
+            else ClassSelectorWindow.Display(_editableRegistry, types, obj => SelectObject(obj));
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace ObjectRegistryEditor.SelectorWindow
     {
         private IGenericWindow _genericWindow;
         /// <summary>
-        /// Открыть окно для выбора объекта который наследуются от interface T
+        /// Open a window to select a ScriptableObject of type T
         /// </summary>
         public static void Display<T>(Action<T> action) where T : ScriptableObject, IEditableObject
         {
@@ -72,7 +72,7 @@ namespace ObjectRegistryEditor.SelectorWindow
             {
                 EditorGUILayout.BeginHorizontal((index % 2 == 0) ? BackgroundStyle.Get(Color.gray) : BackgroundStyle.Get(Color.blue));
                 GUILayout.Label(obj.Name);
-                if (GUILayout.Button("add", GUILayout.Width(60)))
+                if (GUILayout.Button("select", GUILayout.Width(60)))
                 {
                     T castedObj = obj as T;
                     if (castedObj != null)

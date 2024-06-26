@@ -10,8 +10,6 @@ namespace ObjectRegistryEditor
     /// </summary>
     public static class RedactorStyle
     {
-
-
         public static GUIStyle BackgraundItem { get; private set; }
         public static GUIStyle BackgraundSelectItem { get; private set; }
         public static GUIStyle Plus { get; private set; }

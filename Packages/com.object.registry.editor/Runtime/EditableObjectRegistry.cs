@@ -28,25 +28,59 @@ namespace ObjectRegistryEditor
         /// Adds a new editable object with a unique ID.
         /// </summary>
         /// <returns>The added editable object.</returns>
-        public IEditableObject AddObject()
+        public void AddObject(Action<IEditableObject> action)
         {
 #if UNITY_EDITOR
-            int id = GetUniqueID(++_generatorID);
-        
 
-            T obj = ScriptableObject.CreateInstance<T>();
+            //Find all the types that implement the T type
+            Type[] objectTypes = AppDomain.CurrentDomain.GetAssemblies()
+                                                        .SelectMany(i => i.GetTypes())
+                                                        .Where(i => typeof(T).IsAssignableFrom(i) && i.IsClass && !i.IsAbstract)
+                                                        .ToArray();
+            if (objectTypes.Length <= 1)
+            {
+                T obj = ScriptableObject.CreateInstance<T>();
+                SaveObject(obj);
+                action?.Invoke(obj);
+            }
+            else
+            {
+                //Create a menu to select the type of object to create
+                GenericMenu menu = new GenericMenu();
+                foreach (Type type in objectTypes)
+                {
+                    menu.AddItem(new GUIContent(type.Name), false, () =>
+                    {
+                        T obj = ScriptableObject.CreateInstance(type) as T;
+                        SaveObject(obj);
+                        action?.Invoke(obj);
+                    });
+                }
+                menu.ShowAsContext();
+            }
+#else
+            action?.Invoke(null);
+#endif
+        }
+
+        public IEditableObject AddObjectOfType(Type typeObject)
+        {
+            T obj = ScriptableObject.CreateInstance(typeObject) as T;
+            SaveObject(obj);
+            return obj;
+        }
+
+        private void SaveObject(T obj)
+        {
+            int id = GetUniqueID(++_generatorID);
             obj.Initialize(id);
 
             //Save the scriptable object to the folder with the same name as the registry
             string path = GetPathToEditableObjects();
 
-            path = Path.Combine(path, $"{obj.GetType()}_{obj.ID}.asset");
+            path = Path.Combine(path, $"{obj.GetType().Name}_{obj.ID}.asset");
             AssetDatabase.CreateAsset(obj, path);
             _objects.Add(obj);
-            return obj;
-#else
-            return null;
-#endif
         }
 
         private int GetUniqueID(int id)
@@ -145,5 +179,7 @@ namespace ObjectRegistryEditor
             }
 #endif
         }
+
+        public Type GetObjectType() => typeof(T);
     }
 }

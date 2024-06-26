@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea879d758163e6f4992ba3ca58348854, type: 3}
-  m_Name: TestRegistry
+  m_Script: {fileID: 11500000, guid: 79f95f94ec619b047831aed65b48ea87, type: 3}
+  m_Name: TestData_2
   m_EditorClassIdentifier: 
-  _objects: []
-  _generatorID: 0
+  _id: 2
