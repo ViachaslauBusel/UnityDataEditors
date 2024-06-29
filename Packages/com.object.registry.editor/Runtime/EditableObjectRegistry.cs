@@ -176,6 +176,19 @@ namespace ObjectRegistryEditor
                     _objects.Add(obj);
                     EditorUtility.SetDirty(this);
                 }
+                if(obj.ID == 0)
+                {
+                    int id = GetUniqueID(++_generatorID);
+                    obj.Initialize(id); 
+                    EditorUtility.SetDirty(obj);
+                }
+                //Check if Oject has unique ID
+                if(_objects.Where(i => i.ID == obj.ID).Count() > 1)
+                {
+                    int id = GetUniqueID(++_generatorID);
+                    obj.Initialize(id);
+                    EditorUtility.SetDirty(obj);
+                }
             }
 #endif
         }
