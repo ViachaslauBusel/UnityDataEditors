@@ -72,6 +72,7 @@ namespace ObjectRegistryEditor
 
         private void SaveObject(T obj)
         {
+#if UNITY_EDITOR
             int id = GetUniqueID(++_generatorID);
             obj.Initialize(id);
 
@@ -81,6 +82,7 @@ namespace ObjectRegistryEditor
             path = Path.Combine(path, $"{obj.GetType().Name}_{obj.ID}.asset");
             AssetDatabase.CreateAsset(obj, path);
             _objects.Add(obj);
+#endif
         }
 
         private int GetUniqueID(int id)
