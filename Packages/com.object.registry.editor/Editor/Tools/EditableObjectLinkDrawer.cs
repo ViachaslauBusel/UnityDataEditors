@@ -51,10 +51,8 @@ namespace ObjectRegistryEditor
 
             // Display Preview Texture
 
-            Texture icon = _editableObject.Preview != null ? _editableObject.Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
-
+            Texture icon = _editableObject?.Preview != null ? _editableObject.Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
             EditorGUI.DrawPreviewTexture(previewRect, icon);
-
 
             // Display Name
             EditorGUI.LabelField(nameRect, _editableObject != null ? _editableObject.Name : "null");
