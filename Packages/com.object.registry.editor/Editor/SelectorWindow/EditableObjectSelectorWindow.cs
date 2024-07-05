@@ -59,13 +59,17 @@ namespace ObjectRegistryEditor.SelectorWindow
         {
             EditorGUILayout.BeginVertical(BackgroundStyle.Get(Color.white));
             m_find = EditorGUILayout.TextField("FIND:", m_find);
-            string lowerFind = m_find.ToLower(); // Convert to lowercase once
+            m_find = m_find.ToLower(); // Convert to lowercase once
             EditorGUILayout.EndVertical();
+
+            Func<IEditableObject, bool> filter = m_find.StartsWith("id:")
+                                               ? (i => i.ID.ToString().Contains(m_find.Substring(3))) 
+                                               : (i => i.Name.ToLower().Contains(m_find)); // Check if the search string starts with "id:
 
             // Use IEnumerable to avoid unnecessary array conversion
             IEnumerable<IEditableObject> filteredObjects = string.IsNullOrEmpty(m_find)
-                ? m_objects
-                : m_objects.Where(i => i.Name.ToLower().Contains(lowerFind)); // Use the pre-lowered search string
+                                                          ? m_objects
+                                                          : m_objects.Where(filter); // Use the pre-lowered search string
 
             int index = 0;
             foreach (var obj in filteredObjects)
