@@ -10,12 +10,16 @@ public class TestData : ScriptableObject, IEditableObject
 {
     [SerializeField]
     private int _id;
+    [SerializeField]
+    private Texture _preview;
+    [SerializeField]
+    private string _name;
 
     public int ID => _id;
 
-    public string Name => "Test";
+    public string Name => _name;
 
-    public Texture Preview => null;
+    public Texture Preview => _preview;
 
     public void Initialize(int iD)
     {

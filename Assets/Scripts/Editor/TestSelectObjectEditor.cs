@@ -13,13 +13,13 @@ internal class TestSelectObjectEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        if (GUILayout.Button("Select Object"))
-        {
-            ScriptableObjectSelectorWindow.Display<TestData>((data) =>
-            {
-                Debug.Log(data.Name);
-                ((TestSelectObject)target).data = data;
-            });
-        }
+        //if (GUILayout.Button("Select Object"))
+        //{
+        //    EditableObjectSelectorWindow.Display<TestData>((data) =>
+        //    {
+        //        Debug.Log(data.Name);
+        //        ((TestSelectObject)target).data = data;
+        //    });
+        //}
     }
 }

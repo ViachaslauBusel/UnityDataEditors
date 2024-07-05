@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,5 +8,6 @@ using UnityEngine;
 
 public class TestSelectObject : MonoBehaviour
 {
+    public TestDataLink dataLink;
     public TestData data;
 }

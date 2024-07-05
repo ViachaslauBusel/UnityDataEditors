@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: TestData_1
   m_EditorClassIdentifier: 
   _id: 1
+  _preview: {fileID: 0}
+  _name: test_0

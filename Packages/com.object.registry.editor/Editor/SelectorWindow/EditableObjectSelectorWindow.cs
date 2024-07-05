@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ObjectRegistryEditor.SelectorWindow
 {
-    public class ScriptableObjectSelectorWindow : EditorWindow
+    public class EditableObjectSelectorWindow : EditorWindow
     {
         private IGenericWindow _genericWindow;
         /// <summary>
@@ -18,7 +18,7 @@ namespace ObjectRegistryEditor.SelectorWindow
         public static void Display<T>(Action<T> action) where T : ScriptableObject, IEditableObject
         {
 
-            ScriptableObjectSelectorWindow window = EditorWindow.GetWindow<ScriptableObjectSelectorWindow>(true, "ADD");
+            EditableObjectSelectorWindow window = EditorWindow.GetWindow<EditableObjectSelectorWindow>(true, "ADD");
             window.minSize = new Vector2(300.0f, 500.0f);
             GenericScriptableObjectSelectorWindow<T> genericWindow = new GenericScriptableObjectSelectorWindow<T>(action, window);
             window._genericWindow = genericWindow;
@@ -71,7 +71,13 @@ namespace ObjectRegistryEditor.SelectorWindow
             foreach (var obj in filteredObjects)
             {
                 EditorGUILayout.BeginHorizontal((index % 2 == 0) ? BackgroundStyle.Get(Color.gray) : BackgroundStyle.Get(Color.blue));
+                //Icon
+                Texture icon = obj?.Preview != null ? obj.Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
+
+                GUILayout.Box(icon, GUILayout.Width(30), GUILayout.Height(30));
+                
                 GUILayout.Label(obj.Name);
+                GUILayout.Label($" ID: {obj.ID}");
                 if (GUILayout.Button("select", GUILayout.Width(60)))
                 {
                     T castedObj = obj as T;
