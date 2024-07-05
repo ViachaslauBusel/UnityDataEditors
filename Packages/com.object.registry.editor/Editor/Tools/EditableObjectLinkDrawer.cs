@@ -52,7 +52,7 @@ namespace ObjectRegistryEditor
             // Display Preview Texture
 
             Texture icon = _editableObject?.Preview != null ? _editableObject.Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
-            EditorGUI.DrawRect(previewRect, Color.gray);
+            EditorGUI.DrawRect(previewRect, new Color(0.15f, 0.15f, 0.15f));
             GUI.DrawTexture(previewRect, icon);
 
             // Display Name
