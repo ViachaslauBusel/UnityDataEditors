@@ -9,42 +9,42 @@ using UnityEngine;
 
 namespace ObjectRegistryEditor.SelectorWindow
 {
-    public class EditableObjectSelectorWindow : EditorWindow
+    public class DataObjectSelectorWindow : EditorWindow
     {
-        private IGenericWindow _genericWindow;
+        private ScriptableObjectSelectorWindow _windowLogic;
         /// <summary>
         /// Open a window to select a ScriptableObject of type T
         /// </summary>
-        public static void Display<T>(Action<T> action) where T : ScriptableObject, IEditableObject
+        public static void Display<T>(Action<T> action) where T : ScriptableObject, IDataObject
         {
             Display(typeof(T), (i) => action?.Invoke((T)i));
         }
 
-        public static void Display(Type dataType, Action<IEditableObject> action)
+        public static void Display(Type dataType, Action<IDataObject> action)
         {
-            EditableObjectSelectorWindow window = EditorWindow.GetWindow<EditableObjectSelectorWindow>(true, "ADD");
+            DataObjectSelectorWindow window = EditorWindow.GetWindow<DataObjectSelectorWindow>(true, "ADD");
             window.minSize = new Vector2(300.0f, 500.0f);
-            GenericScriptableObjectSelectorWindow genericWindow = new GenericScriptableObjectSelectorWindow(dataType, action, window);
-            window._genericWindow = genericWindow;
+            ScriptableObjectSelectorWindow genericWindow = new ScriptableObjectSelectorWindow(dataType, action, window);
+            window._windowLogic = genericWindow;
 
         }
 
         private void OnGUI()
         {
-            _genericWindow?.OnGUI();
+            _windowLogic?.OnGUI();
         }
     }
 
 
-    public class GenericScriptableObjectSelectorWindow : IGenericWindow
+    public class ScriptableObjectSelectorWindow
     {
         private string _find = "";
         private GUIStyle _iconBackground;
-        private Action<IEditableObject> _action;
+        private Action<IDataObject> _action;
         private EditorWindow _window;
-        private List<IEditableObject> _objects = new List<IEditableObject>();
+        private List<IDataObject> _objects = new List<IDataObject>();
 
-        public GenericScriptableObjectSelectorWindow(Type dataType, Action<IEditableObject> action, EditorWindow window)
+        public ScriptableObjectSelectorWindow(Type dataType, Action<IDataObject> action, EditorWindow window)
         {
             _action = action;
             _window = window;
@@ -55,7 +55,7 @@ namespace ObjectRegistryEditor.SelectorWindow
             foreach (var asset in assets)
             {
                 var obj = AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(asset), dataType);
-                if (obj is IEditableObject editableObject)
+                if (obj is IDataObject editableObject)
                 {
                     _objects.Add(editableObject);
                 }
@@ -69,12 +69,12 @@ namespace ObjectRegistryEditor.SelectorWindow
             _find = _find.ToLower(); // Convert to lowercase once
             EditorGUILayout.EndVertical();
 
-            Func<IEditableObject, bool> filter = _find.StartsWith("id:")
+            Func<IDataObject, bool> filter = _find.StartsWith("id:")
                                                ? (i => i.ID.ToString().Contains(_find.Substring(3))) 
                                                : (i => i.Name.ToLower().Contains(_find)); // Check if the search string starts with "id:
 
             // Use IEnumerable to avoid unnecessary array conversion
-            IEnumerable<IEditableObject> filteredObjects = string.IsNullOrEmpty(_find)
+            IEnumerable<IDataObject> filteredObjects = string.IsNullOrEmpty(_find)
                                                           ? _objects
                                                           : _objects.Where(filter); // Use the pre-lowered search string
 
@@ -88,10 +88,11 @@ namespace ObjectRegistryEditor.SelectorWindow
                 GUILayout.Box(icon, _iconBackground, GUILayout.Width(30), GUILayout.Height(30));
                 
                 GUILayout.Label(obj.Name);
-                GUILayout.Label($" ID: {obj.ID}");
+                GUILayout.FlexibleSpace();
+                GUILayout.Label($" ID: {obj.ID}", GUILayout.Width(100));
                 if (GUILayout.Button("select", GUILayout.Width(60)))
                 {
-                    IEditableObject castedObj = obj;
+                    IDataObject castedObj = obj;
                     if (castedObj != null)
                     {
                         _action?.Invoke(castedObj);

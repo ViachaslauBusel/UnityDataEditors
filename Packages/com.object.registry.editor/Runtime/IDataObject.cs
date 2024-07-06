@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace ObjectRegistryEditor
 {
-    public interface IEditableObject
+    public interface IDataObject
     {
         int ID { get; }
         string Name { get; }

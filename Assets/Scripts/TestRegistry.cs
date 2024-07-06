@@ -5,6 +5,6 @@ using TestNamespace;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TestRegistry", menuName = "DATA/TestRegistry Data", order = 51)]
-public class TestRegistry : EditableObjectRegistry<TestData>
+public class TestRegistry : DataObjectRegistry<TestData>
 {
 }

@@ -8,7 +8,7 @@ namespace TestNamespace
 {
     [CreateAssetMenu(fileName = "TestData", menuName = "ScriptableObjects/Test Data", order = 1)]
     [ItemDetails("Base class for test data.")]
-    public class TestData : ScriptableObject, IEditableObject
+    public class TestData : ScriptableObject, IDataObject
     {
         [SerializeField]
         private int _id;

@@ -10,7 +10,7 @@ namespace ObjectRegistryEditor
     /// <summary>
     /// ObjectRegistry editor window.
     /// </summary>
-    public class WindowRegistryEditor: EditorWindow
+    public class WindowDataRegistryEditor: EditorWindow
     {
         /// <summary>Cell width.</summary>
         private int _cellWidth = 100;
@@ -19,8 +19,8 @@ namespace ObjectRegistryEditor
         private float _menuHeight = 30.0f;
         private int _currentPage = 0;
         private int _totalPages;
-        private IEditableObjectRegistry _editableRegistry;
-        private IEditableObject _select_editor;
+        private IDataObjectRegistry _editableRegistry;
+        private IDataObject _select_editor;
         private long _clickTime;
 
         protected void OnEnable()
@@ -35,9 +35,9 @@ namespace ObjectRegistryEditor
             DrawWindowGrid();
         }
 
-        public static WindowRegistryEditor OpenWindow()
+        public static WindowDataRegistryEditor OpenWindow()
         {
-            var window = EditorWindow.GetWindow<WindowRegistryEditor>(false, "ObjectRegistry");
+            var window = EditorWindow.GetWindow<WindowDataRegistryEditor>(false, "ObjectRegistry");
             window.minSize = new Vector2(500.0f, 320.0f);
             return window;
         }
@@ -149,7 +149,7 @@ namespace ObjectRegistryEditor
         /// <param name="hor_i">Позиция ячейки по горизонтали</param>
         /// <param name="horizontal_space"></param>
         /// <param name="vertical_space"></param>
-        private void DrawItemArea(IEditableObject obj, int ver_i, int hor_i, float horizontal_space, float vertical_space)
+        private void DrawItemArea(IDataObject obj, int ver_i, int hor_i, float horizontal_space, float vertical_space)
         {
             GUILayout.BeginArea(new Rect(_cellWidth * hor_i + horizontal_space * hor_i,
                                          _cellHeight * ver_i + vertical_space * ver_i + _menuHeight,
@@ -217,7 +217,7 @@ namespace ObjectRegistryEditor
         /// Выбрать этот обьект для редактирование в окне Инспектора
         /// </summary>
         /// <param name="obj"></param>
-        protected virtual void SelectObject(IEditableObject obj) {
+        protected virtual void SelectObject(IDataObject obj) {
            // if (_select_editor == null) _select_editor = ScriptableObject.CreateInstance<ObjectEditor>();
             _select_editor = obj;
             //Необходима для вызова отрисовки в окне инспектор
@@ -228,7 +228,7 @@ namespace ObjectRegistryEditor
         /// Отрисовать информацию о объекте
         /// </summary>
         /// <param name="obj"></param>
-        private void DrawObject(IEditableObject obj)
+        private void DrawObject(IDataObject obj)
         {
             GUILayout.Label(obj.Preview, GUILayout.Width(90), GUILayout.Height(90));
             Color def = GUI.contentColor;
@@ -246,7 +246,7 @@ namespace ObjectRegistryEditor
             {
                 if (EditorUtility.DisplayDialog("Удаление предмета", "Удалить предмет ID: " + _select_editor.ID + ", Имя: " + _select_editor.Name + "?", "Да", "Нет"))
                 {
-                    _editableRegistry.RemoveObject((IEditableObject)_select_editor);
+                    _editableRegistry.RemoveObject((IDataObject)_select_editor);
                     _select_editor = null;
                     Selection.activeObject = null;
                 }
@@ -262,12 +262,12 @@ namespace ObjectRegistryEditor
             Type assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
 
             // Check if the asset type is NodesContainer
-            bool isObjectRegistry = typeof(IEditableObjectRegistry).IsAssignableFrom(assetType);
+            bool isObjectRegistry = typeof(IDataObjectRegistry).IsAssignableFrom(assetType);
 
             if (isObjectRegistry)
             {
                 // Create and load the window if the asset is a NodesContainer
-                WindowRegistryEditor window = OpenWindow();
+                WindowDataRegistryEditor window = OpenWindow();
                 window.LoadFromFile(assetPath);
             }
 
@@ -277,7 +277,7 @@ namespace ObjectRegistryEditor
 
         private void LoadFromFile(string assetPath)
         {
-            IEditableObjectRegistry container = (IEditableObjectRegistry)AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
+            IDataObjectRegistry container = (IDataObjectRegistry)AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
             _editableRegistry = container;
         }
     }

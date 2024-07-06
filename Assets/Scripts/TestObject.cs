@@ -11,6 +11,6 @@ namespace Assets.Scripts
     [Serializable]
     public class TestObject
     {
-        public EditableObjectLink<TestData> link;
+        public DataLink<TestData> link;
     }
 }

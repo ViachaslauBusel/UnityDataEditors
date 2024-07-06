@@ -12,14 +12,14 @@ using UnityEngine;
 namespace ObjectRegistryEditor
 {
     // Base drawer that can handle any EditableObjectLink<T>
-    [CustomPropertyDrawer(typeof(EditableObjectLink<>), true)]
+    [CustomPropertyDrawer(typeof(DataLink<>), true)]
     public class GenericEditableObjectLinkDrawer : PropertyDrawer
     {
-        private IEditableObject _editableObject;
         private bool _isInitialized = false;
-        private Type _dataType;
+        protected IDataObject _editableObject;
+        protected Type _dataType;
 
-        private void InitializeEditableObject(SerializedProperty property)
+        protected virtual void InitializeEditableObject(SerializedProperty property)
         {
             var idProperty = property.FindPropertyRelative("_id");
             Type parentType = property.serializedObject.targetObject.GetType();
@@ -27,7 +27,7 @@ namespace ObjectRegistryEditor
             _dataType = fi.FieldType.GetGenericArguments()[0];
 
             var allEditableObjects = AssetDatabase.FindAssets("t:" + _dataType.Name)
-                                                  .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IEditableObject)
+                                                  .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)
                                                   .ToList();
             _editableObject = allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue);
         }
@@ -118,7 +118,7 @@ namespace ObjectRegistryEditor
             // Display Edit Button
             if (GUI.Button(buttonRect, EditorGUIUtility.IconContent("Prefab Icon"), GUI.skin.button))
             {
-                EditableObjectSelectorWindow.Display(_dataType, selectedObject =>
+                DataObjectSelectorWindow.Display(_dataType, selectedObject =>
                 {
                     _editableObject = selectedObject;
                     idProperty.intValue = selectedObject?.ID ?? 0;

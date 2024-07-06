@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ObjectRegistryEditor
 {
     [Serializable]
-    public struct EditableObjectLink<T> where T : IEditableObject
+    public struct DataLink<T> where T : IDataObject
     {
         [SerializeField]
         private int _id;

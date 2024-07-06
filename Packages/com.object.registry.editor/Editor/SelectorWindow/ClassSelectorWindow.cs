@@ -11,8 +11,8 @@ namespace ObjectRegistryEditor.SelectorWindow
 {
     public class ClassSelectorWindow : EditorWindow
     {
-        private IEditableObjectRegistry _editableObjectRegistry;
-        private Action<IEditableObject> _actionOnAdd;
+        private IDataObjectRegistry _editableObjectRegistry;
+        private Action<IDataObject> _actionOnAdd;
         private List<Type> _types;
         private string _find = "";
         private Vector2 _scrollPosition;
@@ -20,14 +20,14 @@ namespace ObjectRegistryEditor.SelectorWindow
         /// <summary>
         /// Open a window to select an class that implements the IEditableObject interface and add it to the registry.
         /// </summary>
-        public static void Display(IEditableObjectRegistry editableObjectRegistry, List<Type> types, Action<IEditableObject> actionOnAdd)
+        public static void Display(IDataObjectRegistry editableObjectRegistry, List<Type> types, Action<IDataObject> actionOnAdd)
         {
             ClassSelectorWindow window = EditorWindow.GetWindow<ClassSelectorWindow>(true, "ADD");
             window.Initialize(editableObjectRegistry, actionOnAdd, types);
             window.minSize = new Vector2(300.0f, 500.0f);
         }
 
-        private void Initialize(IEditableObjectRegistry editableObjectRegistry, Action<IEditableObject> actionOnAdd, List<Type> types)
+        private void Initialize(IDataObjectRegistry editableObjectRegistry, Action<IDataObject> actionOnAdd, List<Type> types)
         {
             _editableObjectRegistry = editableObjectRegistry;
             _actionOnAdd = actionOnAdd;

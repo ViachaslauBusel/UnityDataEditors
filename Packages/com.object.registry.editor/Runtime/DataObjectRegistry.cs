@@ -12,7 +12,7 @@ namespace ObjectRegistryEditor
     /// Container for storing editable objects.
     /// </summary>
     /// <typeparam name="T">Type of the editable objects.</typeparam>
-    public abstract class EditableObjectRegistry<T> : ScriptableObject, IEditableObjectRegistry where T : ScriptableObject, IEditableObject, new()
+    public abstract class DataObjectRegistry<T> : ScriptableObject, IDataObjectRegistry where T : ScriptableObject, IDataObject, new()
     {
         [SerializeField]
         private List<T> _objects = new List<T>();
@@ -28,7 +28,7 @@ namespace ObjectRegistryEditor
         /// Adds a new editable object with a unique ID.
         /// </summary>
         /// <returns>The added editable object.</returns>
-        public void AddObject(Action<IEditableObject> action)
+        public void AddObject(Action<IDataObject> action)
         {
 #if UNITY_EDITOR
 
@@ -63,11 +63,16 @@ namespace ObjectRegistryEditor
 #endif
         }
 
-        public IEditableObject AddObjectOfType(Type typeObject)
+        public IDataObject AddObjectOfType(Type typeObject)
         {
             T obj = ScriptableObject.CreateInstance(typeObject) as T;
             SaveObject(obj);
             return obj;
+        }
+
+        public U AddObjectOfType<U>() where U : ScriptableObject, IDataObject
+        {
+            return AddObjectOfType(typeof(U)) as U;
         }
 
         private void SaveObject(T obj)
@@ -102,13 +107,13 @@ namespace ObjectRegistryEditor
         /// <summary>
         /// Gets the editable object at the specified index.
         /// </summary>
-        public IEditableObject this[int index] => _objects[index];
+        public IDataObject this[int index] => _objects[index];
 
         /// <summary>
         /// Removes the specified editable object.
         /// </summary>
         /// <param name="obj">The editable object to remove.</param>
-        public void RemoveObject(IEditableObject obj)
+        public void RemoveObject(IDataObject obj)
         {
 #if UNITY_EDITOR
             if (obj != null)
