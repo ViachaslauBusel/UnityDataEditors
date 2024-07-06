@@ -12,5 +12,5 @@ public class TestSelectObject : MonoBehaviour
 {
     public TestDataLink dataLink;
     public TestData data;
-    public EditableObjectLink<TestData> dataLink2;
+    public List<TestObject> testObject;
 }
