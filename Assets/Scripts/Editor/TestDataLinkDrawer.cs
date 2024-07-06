@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using static UnityEditor.Progress;
 using UnityEditor;
 using UnityEngine;
+using TestNamespace;
 
 namespace Assets.Scripts
 {

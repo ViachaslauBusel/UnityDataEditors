@@ -13,8 +13,10 @@ namespace ObjectRegistryEditor.Tools
 
         public static GUIStyle Get(Color color)
         {
-            if (style == null) style = new GUIStyle();
-            if (texture == null) texture = new Texture2D(1, 1);
+            //if (style == null)
+                style = new GUIStyle();
+            //if (texture == null)
+                texture = new Texture2D(1, 1);
             texture.SetPixel(0, 0, color);
             texture.Apply();
             style.normal.background = texture;

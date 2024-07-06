@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataLink:
-    _id: 2
+    _id: 1
   data: {fileID: 11400000, guid: 300915ca65333ba4883c52b8ec51b2b2, type: 2}
 --- !u!4 &1758426083
 Transform:

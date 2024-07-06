@@ -1,4 +1,5 @@
 ﻿using ObjectRegistryEditor;
+using TestNamespace;
 
 namespace Assets.Scripts
 {
