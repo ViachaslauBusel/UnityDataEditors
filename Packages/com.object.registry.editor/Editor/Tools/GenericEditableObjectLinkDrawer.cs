@@ -15,11 +15,10 @@ namespace ObjectRegistryEditor
     [CustomPropertyDrawer(typeof(DataLink<>), true)]
     public class GenericEditableObjectLinkDrawer : PropertyDrawer
     {
-        private bool _isInitialized = false;
-        protected IDataObject _editableObject;
+        protected Dictionary<string, IDataObject> _editableObjectLinksCache = new Dictionary<string, IDataObject>();
         protected Type _dataType;
 
-        protected virtual void InitializeEditableObject(SerializedProperty property)
+        protected virtual void InitializeEditableObject(SerializedProperty property, string propertyID)
         {
             var idProperty = property.FindPropertyRelative("_id");
             Type parentType = property.serializedObject.targetObject.GetType();
@@ -29,7 +28,8 @@ namespace ObjectRegistryEditor
             var allEditableObjects = AssetDatabase.FindAssets("t:" + _dataType.Name)
                                                   .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)
                                                   .ToList();
-            _editableObject = allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue);
+
+            _editableObjectLinksCache.Add(propertyID, allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue));
         }
 
         public FieldInfo FindProperty(Type parentType, string propertyPath)
@@ -76,10 +76,10 @@ namespace ObjectRegistryEditor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (!_isInitialized)
+            string propertyId = property.propertyPath;
+            if (!_editableObjectLinksCache.ContainsKey(propertyId))
             {
-                InitializeEditableObject(property);
-                _isInitialized = true;
+                InitializeEditableObject(property, propertyId);
             }
 
             EditorGUI.BeginProperty(position, label, property);
@@ -105,12 +105,12 @@ namespace ObjectRegistryEditor
 
             // Display Preview Texture
 
-            Texture icon = _editableObject?.Preview != null ? _editableObject.Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
+            Texture icon = _editableObjectLinksCache[propertyId]?.Preview != null ? _editableObjectLinksCache[propertyId].Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
             EditorGUI.DrawRect(previewRect, new Color(0.15f, 0.15f, 0.15f));
             GUI.DrawTexture(previewRect, icon);
 
             // Display Name
-            EditorGUI.LabelField(nameRect, _editableObject != null ? _editableObject.Name : "null");
+            EditorGUI.LabelField(nameRect, _editableObjectLinksCache[propertyId] != null ? _editableObjectLinksCache[propertyId].Name : "null");
 
             // Display ID on the same line as Name
             EditorGUI.LabelField(idRect, $" ID: {id}");
@@ -120,7 +120,7 @@ namespace ObjectRegistryEditor
             {
                 DataObjectSelectorWindow.Display(_dataType, selectedObject =>
                 {
-                    _editableObject = selectedObject;
+                    _editableObjectLinksCache[propertyId] = selectedObject;
                     idProperty.intValue = selectedObject?.ID ?? 0;
                     property.serializedObject.ApplyModifiedProperties();
                 });
