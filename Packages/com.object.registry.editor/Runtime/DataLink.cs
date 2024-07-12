@@ -6,7 +6,7 @@ namespace ObjectRegistryEditor
     [Serializable]
     public struct DataLink<T> where T : IDataObject
     {
-        [SerializeField, SerializeReference]
+        [SerializeField]
         private int _id;
 
         public int ID => _id;

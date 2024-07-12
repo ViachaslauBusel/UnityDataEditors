@@ -29,7 +29,7 @@ namespace ObjectRegistryEditor
                                                   .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)
                                                   .ToList();
 
-            _editableObjectLinksCache.Add(propertyID, allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue));
+            _editableObjectLinksCache[propertyID] = allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue);
         }
 
         public FieldInfo FindProperty(Type parentType, string propertyPath)
@@ -76,8 +76,10 @@ namespace ObjectRegistryEditor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            var DataIdfield = property.FindPropertyRelative("_id");
+            var datId = DataIdfield.intValue;
             string propertyId = property.propertyPath;
-            if (!_editableObjectLinksCache.ContainsKey(propertyId))
+            if (!_editableObjectLinksCache.ContainsKey(propertyId) || _editableObjectLinksCache[propertyId].ID != datId)
             {
                 InitializeEditableObject(property, propertyId);
             }
@@ -90,8 +92,7 @@ namespace ObjectRegistryEditor
             // Adjust the position to provide padding inside the box
             Rect innerPosition = new Rect(position.x + 2, position.y + 2, position.width - 4, position.height - 4);
 
-            var idProperty = property.FindPropertyRelative("_id");
-            var id = idProperty.intValue;
+
 
             // Adjusted layout calculations for inner content
             float space = 5;
@@ -113,7 +114,7 @@ namespace ObjectRegistryEditor
             EditorGUI.LabelField(nameRect, _editableObjectLinksCache[propertyId] != null ? _editableObjectLinksCache[propertyId].Name : "null");
 
             // Display ID on the same line as Name
-            EditorGUI.LabelField(idRect, $" ID: {id}");
+            EditorGUI.LabelField(idRect, $" ID: {datId}");
 
             // Display Edit Button
             if (GUI.Button(buttonRect, EditorGUIUtility.IconContent("Prefab Icon"), GUI.skin.button))
@@ -121,7 +122,7 @@ namespace ObjectRegistryEditor
                 DataObjectSelectorWindow.Display(_dataType, selectedObject =>
                 {
                     _editableObjectLinksCache[propertyId] = selectedObject;
-                    idProperty.intValue = selectedObject?.ID ?? 0;
+                    DataIdfield.intValue = selectedObject?.ID ?? 0;
                     property.serializedObject.ApplyModifiedProperties();
                 });
             }
