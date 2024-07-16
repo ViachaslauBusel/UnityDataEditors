@@ -79,7 +79,7 @@ namespace ObjectRegistryEditor
             var DataIdfield = property.FindPropertyRelative("_id");
             var datId = DataIdfield.intValue;
             string propertyId = property.propertyPath;
-            if (!_editableObjectLinksCache.ContainsKey(propertyId) || _editableObjectLinksCache[propertyId].ID != datId)
+            if (!_editableObjectLinksCache.ContainsKey(propertyId) || (_editableObjectLinksCache[propertyId] != null && _editableObjectLinksCache[propertyId].ID != datId))
             {
                 InitializeEditableObject(property, propertyId);
             }

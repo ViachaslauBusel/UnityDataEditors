@@ -372,13 +372,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataLink_0:
-    _id: 3
+    _id: 1
   dataLink_1:
-    _id: 2
+    _id: 3
   data: {fileID: 11400000, guid: 2fa41bec97ab18240ba56cfaa027275f, type: 2}
   testObject:
   - link:
-      _id: 3
+      _id: 2
   - link:
       _id: 2
 --- !u!4 &1758426083
