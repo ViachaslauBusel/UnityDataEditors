@@ -201,5 +201,7 @@ namespace ObjectRegistryEditor
         }
 
         public Type GetObjectType() => typeof(T);
+
+        IDataObject IDataObjectRegistry.GetObjectByID(int id) => GetObjectByID(id);
     }
 }
