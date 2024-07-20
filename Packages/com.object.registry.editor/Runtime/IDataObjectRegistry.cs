@@ -14,6 +14,7 @@ namespace ObjectRegistryEditor
 
         IDataObject AddObjectOfType(Type type);
         U AddObjectOfType<U>() where U : ScriptableObject, IDataObject;
+        IDataObject GetObjectByID(int id);
         void RemoveObject(IDataObject oBJ);
         void Export();
         Type GetObjectType();
