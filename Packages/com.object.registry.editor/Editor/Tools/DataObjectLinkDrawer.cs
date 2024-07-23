@@ -1,12 +1,10 @@
-﻿using ObjectRegistryEditor.SelectorWindow;
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace ObjectRegistryEditor
 {
-    public class EditableObjectLinkDrawer<T> : GenericEditableObjectLinkDrawer where T : ScriptableObject, IDataObject
+    public class DataObjectLinkDrawer<T> : GenericDataObjectLinkDrawer where T : ScriptableObject, IDataObject
     {
         protected override void InitializeEditableObject(SerializedProperty property, string propertyID)
         {

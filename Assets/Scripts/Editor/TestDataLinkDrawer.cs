@@ -12,7 +12,7 @@ using TestNamespace;
 namespace Assets.Scripts
 {
     [CustomPropertyDrawer(typeof(TestDataLink))]
-    public class TestDataLinkDrawer : EditableObjectLinkDrawer<TestData>
+    public class TestDataLinkDrawer : DataObjectLinkDrawer<TestData>
     {
     }
 }

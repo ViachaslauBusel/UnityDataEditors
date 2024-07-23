@@ -371,16 +371,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403321146ab497f4783dcf3e14a779f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data_0: {fileID: 11400000, guid: 2fa41bec97ab18240ba56cfaa027275f, type: 2}
   dataLink_0:
     _id: 1
   dataLink_1:
     _id: 3
-  data: {fileID: 11400000, guid: 2fa41bec97ab18240ba56cfaa027275f, type: 2}
+  data: {fileID: 11400000, guid: b77e115e811c48848bcbb4011535ff71, type: 2}
   testObject:
   - link:
-      _id: 2
-  - link:
-      _id: 2
+      _id: 3
 --- !u!4 &1758426083
 Transform:
   m_ObjectHideFlags: 0
