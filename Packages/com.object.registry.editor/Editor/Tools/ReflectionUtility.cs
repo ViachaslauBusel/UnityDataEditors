@@ -39,10 +39,20 @@ namespace ObjectRegistryEditor
                 else
                 {
                     // Use BindingFlags to search for both public and non-public instance fields
-                    fi = parentType.GetField(property, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    fi = null;
+                    while(fi == null && parentType != null)
+                    {
+                        fi = parentType.GetField(property, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (fi == null)
+                        {
+                            parentType = parentType.BaseType;
+                            continue;
+                        }
+                    }
+
                     if (fi == null)
                     {
-                        return null; // Field not found
+                       return null;
                     }
                     parentType = fi.FieldType;
                 }
