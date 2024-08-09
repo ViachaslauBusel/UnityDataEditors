@@ -1,4 +1,5 @@
-﻿using ObjectRegistryEditor.SelectorWindow;
+﻿using ObjectRegistryEditor.Helpers;
+using ObjectRegistryEditor.SelectorWindow;
 using System;
 using System.Linq;
 using UnityEditor;
@@ -80,17 +81,7 @@ namespace ObjectRegistryEditor
           //  _editableRegistry = EditorGUILayout.ObjectField(_editableRegistry, typeof(Container), false) as Container;
             GUILayout.FlexibleSpace();
             //Pages>>>
-            if (GUILayout.Button("", RedactorStyle.Left, GUILayout.Height(25), GUILayout.Width(25)))
-            {
-                if (_currentPage > 0) _currentPage--;
-            }
-            GUILayout.Space(5.0f);
-            GUILayout.Label((_currentPage + 1) + "/" + (_totalPages + 1), RedactorStyle.Text);
-            GUILayout.Space(5.0f);
-            if (GUILayout.Button("", RedactorStyle.Right, GUILayout.Height(25), GUILayout.Width(25)))
-            {
-                if (_currentPage < _totalPages) _currentPage++;
-            }
+            _currentPage = GUIHelper.DrawPagesSelector(_currentPage, _totalPages);
             //Pages<<<
             GUILayout.FlexibleSpace();
 

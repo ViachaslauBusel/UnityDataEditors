@@ -352,6 +352,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1758426083}
   - component: {fileID: 1758426082}
+  - component: {fileID: 1758426084}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -375,7 +376,7 @@ MonoBehaviour:
   dataLink_0:
     _id: 1
   dataLink_1:
-    _id: 3
+    _id: 2
   data: {fileID: 11400000, guid: b77e115e811c48848bcbb4011535ff71, type: 2}
   testObject:
   - link:
@@ -395,6 +396,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1758426084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758426081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5f391bc7376ba346b7df398067b79cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dataObject: {fileID: 11400000, guid: b77e115e811c48848bcbb4011535ff71, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

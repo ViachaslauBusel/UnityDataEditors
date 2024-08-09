@@ -1,4 +1,5 @@
-﻿using ObjectRegistryEditor.Tools;
+﻿using ObjectRegistryEditor.Helpers;
+using ObjectRegistryEditor.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace ObjectRegistryEditor.SelectorWindow
     public class ScriptableObjectSelectorWindow
     {
         private string _find = "";
+        private int _currentPage = 0;
         private GUIStyle _iconBackground;
         private Action<IDataObject> _action;
         private EditorWindow _window;
@@ -64,20 +66,31 @@ namespace ObjectRegistryEditor.SelectorWindow
 
         public void OnGUI()
         {
-            EditorGUILayout.BeginVertical(BackgroundStyle.Get(Color.white));
-            _find = EditorGUILayout.TextField("FIND:", _find);
-            _find = _find.ToLower(); // Convert to lowercase once
-            EditorGUILayout.EndVertical();
-
             Func<IDataObject, bool> filter = _find.StartsWith("id:")
-                                               ? (i => i.ID.ToString().Contains(_find.Substring(3))) 
-                                               : (i => i.Name.ToLower().Contains(_find)); // Check if the search string starts with "id:
+                                   ? (i => i.ID.ToString().Contains(_find.Substring(3)))
+                                   : (i => i.Name.ToLower().Contains(_find)); // Check if the search string starts with "id:
 
             // Use IEnumerable to avoid unnecessary array conversion
             IEnumerable<IDataObject> filteredObjects = string.IsNullOrEmpty(_find)
                                                           ? _objects
                                                           : _objects.Where(filter); // Use the pre-lowered search string
+            int totalObjects = filteredObjects.Count();
+            float totalHeight = totalObjects * 60f;
+            float pageHeight = _window.position.height - 30;
+            int elementsPerPage = Mathf.FloorToInt(pageHeight / 30f);
+            int maxPages = Mathf.FloorToInt(totalObjects / (float)elementsPerPage);
+            _currentPage = Math.Clamp(_currentPage, 0, maxPages);
 
+            EditorGUILayout.BeginHorizontal(BackgroundStyle.Get(Color.white));
+            //Button left page
+            _currentPage = GUIHelper.DrawPagesSelector(_currentPage, maxPages);
+            GUILayout.Label("FIND:", GUILayout.Width(40));
+            _find = EditorGUILayout.TextField(_find, GUILayout.Width(200));
+            _find = _find.ToLower(); // Convert to lowercase once
+            
+            EditorGUILayout.EndHorizontal();
+
+            filteredObjects = filteredObjects.Skip(_currentPage * elementsPerPage).Take(elementsPerPage);
             int index = 0;
             foreach (var obj in filteredObjects)
             {
