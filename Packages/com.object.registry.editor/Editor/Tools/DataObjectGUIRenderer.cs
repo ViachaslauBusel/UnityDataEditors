@@ -32,10 +32,14 @@ namespace ObjectRegistryEditor
             Rect buttonRect = new Rect(innerPosition.x + innerPosition.width - buttonSize, innerPosition.y, buttonSize, buttonSize);
 
             // Display Preview Texture
-
             Texture icon = dataObject?.Preview != null ? dataObject.Preview : EditorGUIUtility.IconContent("BuildSettings.StandaloneGLESEmu").image;
             EditorGUI.DrawRect(previewRect, new Color(0.15f, 0.15f, 0.15f));
-            GUI.DrawTexture(previewRect, icon);
+            if (GUI.Button(previewRect, icon, GUI.skin.label))
+            {
+                //Select prefab in project window
+                EditorGUIUtility.PingObject((UnityEngine.Object)dataObject);
+            }
+            //GUI.DrawTexture(previewRect, icon);
 
             // Display Name
             EditorGUI.LabelField(nameRect, dataObject != null ? dataObject.Name : "null");
