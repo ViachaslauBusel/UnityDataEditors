@@ -9,7 +9,7 @@ namespace ObjectRegistryEditor
 {
     internal static class ReflectionUtility
     {
-        internal static FieldInfo FindProperty(Type parentType, string propertyPath)
+        internal static Type FindPropertyType(Type parentType, string propertyPath)
         {
             string[] properties = propertyPath.Split('.');
             FieldInfo fi = null;
@@ -58,9 +58,7 @@ namespace ObjectRegistryEditor
                 }
             }
 
-            return fi;
+            return parentType;
         }
-
-
     }
 }

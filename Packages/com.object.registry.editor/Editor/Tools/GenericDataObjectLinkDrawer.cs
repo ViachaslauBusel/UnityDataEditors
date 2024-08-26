@@ -19,8 +19,8 @@ namespace ObjectRegistryEditor
         {
             var idProperty = property.FindPropertyRelative("_id");
             Type parentType = property.serializedObject.targetObject.GetType();
-            FieldInfo fi =  ReflectionUtility.FindProperty(parentType, property.propertyPath);
-            _dataType = fi.FieldType.GetGenericArguments()[0];
+            Type fieldType =  ReflectionUtility.FindPropertyType(parentType, property.propertyPath);
+            _dataType = fieldType.GetGenericArguments()[0];
 
             var allEditableObjects = AssetDatabase.FindAssets("t:" + _dataType.Name)
                                                   .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)

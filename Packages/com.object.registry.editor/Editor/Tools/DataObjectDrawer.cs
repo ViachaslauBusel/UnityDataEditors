@@ -11,9 +11,9 @@ namespace ObjectRegistryEditor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             Type parentType = property.serializedObject.targetObject.GetType();
-            FieldInfo fi = ReflectionUtility.FindProperty(parentType, property.propertyPath);
+            Type fieldType = ReflectionUtility.FindPropertyType(parentType, property.propertyPath);
 
-            DataObjectGUIRenderer.DrawDataObject(position, property, label, property.objectReferenceValue as IDataObject, fi.FieldType, (obj) => SelectObject(property, obj));
+            DataObjectGUIRenderer.DrawDataObject(position, property, label, property.objectReferenceValue as IDataObject, fieldType, (obj) => SelectObject(property, obj));
         }
 
         private void SelectObject(SerializedProperty property, IDataObject @object)
