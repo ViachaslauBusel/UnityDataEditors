@@ -46,7 +46,7 @@ namespace ObjectRegistryEditor
             //create button for Menu
             Menu = CreateButtonStyle("menu");
             SaveOnDisk = CreateButtonStyle("save_on_disk", "save_on_disk_2");
-            Export = CreateButtonStyle("save_on_disk", "save_on_disk_2");
+            Export = CreateButtonStyle("export", "export_active");
             Delet = CreateButtonStyle("delet", "delet2");
             Left = CreateButtonStyle("left_normal", "left_active");
             Right = CreateButtonStyle("right_normal", "right_active");
