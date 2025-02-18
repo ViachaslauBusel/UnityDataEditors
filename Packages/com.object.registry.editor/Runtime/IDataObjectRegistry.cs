@@ -9,6 +9,7 @@ namespace ObjectRegistryEditor
 {
     public interface IDataObjectRegistry
     {
+        string Name { get; }
         public IDataObject this[int index] { get; }
         int Count { get; }
 

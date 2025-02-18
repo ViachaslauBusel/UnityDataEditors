@@ -1,6 +1,8 @@
-﻿using ObjectRegistryEditor.Helpers;
+﻿using NUnit.Framework;
+using ObjectRegistryEditor.Helpers;
 using ObjectRegistryEditor.SelectorWindow;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -8,11 +10,24 @@ using UnityEngine;
 
 namespace ObjectRegistryEditor
 {
+    public class RegistryPopupData
+    {
+        public readonly string[] AllRegistryNames;
+        public readonly List<IDataObjectRegistry> AllRegistryInProject;
+
+        public RegistryPopupData(List<IDataObjectRegistry> allRegistryInProject)
+        {
+            AllRegistryInProject = allRegistryInProject;
+            AllRegistryNames = AllRegistryInProject.Select(registry => registry.Name).ToArray();
+        }
+    }
+
     /// <summary>
     /// ObjectRegistry editor window.
     /// </summary>
     public class WindowDataRegistryEditor: EditorWindow
     {
+        private const string FILE_PATH_KEY = "ObjectRegistryEditor.FilePath";
         /// <summary>Cell width.</summary>
         private int _cellWidth = 100;
         /// <summary>Cell height.</summary>
@@ -21,18 +36,37 @@ namespace ObjectRegistryEditor
         private int _currentPage = 0;
         private int _totalPages;
         private IDataObjectRegistry _editableRegistry;
-        private IDataObject _select_editor;
+        private IDataObject _selectedObject;
         private long _clickTime;
+        private RegistryPopupData _popup;
 
-        protected void OnEnable()
+        private void OnEnable()
         {
-           // titleContent.image = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Editor/Img/bag.png"); //Resources.Load("Editor/Img/bag") as Texture2D;
+            UpdatePopup();
+        }
+
+        private void UpdatePopup()
+        {
+            var registries = AssetDatabase.GetAllAssetPaths()
+                                      .Select(i => AssetDatabase.LoadAssetAtPath<ScriptableObject>(i))
+                                      .OfType<IDataObjectRegistry>()
+                                      .ToList();
+            _popup = new RegistryPopupData(registries);
         }
 
         public void OnGUI()
         {
             DrawMenu();
-            if (_editableRegistry == null) return;
+            if (_editableRegistry == null)
+            {
+                string filePath = EditorPrefs.GetString(FILE_PATH_KEY);
+                if(!string.IsNullOrEmpty(filePath))
+                {
+                    LoadFromFile(filePath);
+                }
+
+                if (_editableRegistry == null) return;
+            }
             DrawWindowGrid();
         }
 
@@ -61,11 +95,16 @@ namespace ObjectRegistryEditor
                 try
                 {
                     _editableRegistry.Export();
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Debug.LogError(ex);
-                    error = true; }
-               finally { EditorUtility.DisplayDialog("Export", "Экспорт выполнен " +((error) ? "с ошибками" : "успешно"), "ok"); }
+                    error = true;
+                }
+                finally
+                {
+                    EditorUtility.DisplayDialog("Export", "Export completed " + ((error) ? "with errors" : "successfully"), "ok");
+                }
             }
             //Button export<<<<
             GUILayout.Space(20.0f);
@@ -77,8 +116,9 @@ namespace ObjectRegistryEditor
             //Button remove<<<<
             GUILayout.Space(40.0f);
 
-            //Выбор редактируемого хранилище
-          //  _editableRegistry = EditorGUILayout.ObjectField(_editableRegistry, typeof(Container), false) as Container;
+            // Dropdown list of editable registries
+            DrawDropdown();
+
             GUILayout.FlexibleSpace();
             //Pages>>>
             _currentPage = GUIHelper.DrawPagesSelector(_currentPage, _totalPages);
@@ -88,28 +128,48 @@ namespace ObjectRegistryEditor
             GUILayout.EndHorizontal();
         }
 
+        private void DrawDropdown()
+        {
+
+            // Находим индекс текущего выбранного регистра
+            int selectedIndex = _popup.AllRegistryInProject.IndexOf(_editableRegistry);
+
+            // Отображаем выпадающий список
+            int newIndex = EditorGUILayout.Popup(selectedIndex, _popup.AllRegistryNames, GUILayout.Height(25), GUILayout.Width(200));
+            if (GUILayout.Button("", RedactorStyle.Refresh, GUILayout.Height(25), GUILayout.Width(25)))
+            {
+                UpdatePopup();
+            }
+
+            // Если выбранный индекс изменился, обновляем текущий регистр
+            if (newIndex != selectedIndex && newIndex >= 0 && newIndex < _popup.AllRegistryInProject.Count)
+            {
+                string assetPath = AssetDatabase.GetAssetPath((ScriptableObject)_popup.AllRegistryInProject[newIndex]);
+                LoadFromFile(assetPath);
+            }
+        }
+
         private void DrawWindowGrid()
         {
-            //Высота окна
+            // Height of the window without the menu
             float height = position.height - _menuHeight;
 
-            //Количество ячеек по горизонтали
+            // Number of cells horizontally
             int horizontal_element = (int)position.width / _cellWidth;
-            //Количество ячеек по вертикали
+            // Number of cells vertically
             int verctical_element = (int)height / _cellHeight;
 
-            //Свободное пространство между ячейками
+            // The distance between the cells
             float horizontal_space = (position.width - (horizontal_element * _cellWidth)) / (horizontal_element - 1);
             float vertical_space = (height - (verctical_element * _cellHeight)) / (verctical_element - 1);
 
-            //Количество ячеек на странице
+            // Number of cells on the page
             int elementOnPage = horizontal_element * verctical_element;
-            //Всего страниц
+            // Total number of pages
             _totalPages = (_editableRegistry.Count + 1) / (elementOnPage);
-            //Если выбранная страница находится за последней допустимой
             if (_currentPage > _totalPages) _currentPage = _totalPages;
 
-            //Индекс в хранилище отрисовымаего объекта
+            // Index of the first element on the page in the registry
             int index = _currentPage * elementOnPage;
             int ver_i = 0;
             int hor_i = 0;
@@ -117,7 +177,7 @@ namespace ObjectRegistryEditor
             {
                 for (hor_i = 0; hor_i < horizontal_element; hor_i++)
                 {
-                    //Если в хранилище закончились обьекты, отрисовать кнопку создание нового обьекта
+                    // Draw the button to create a new object
                     if (_editableRegistry.Count <= index)
                     {
                         if (GUI.Button(new Rect(_cellWidth * hor_i + horizontal_space * hor_i + 18,
@@ -132,8 +192,9 @@ namespace ObjectRegistryEditor
                 }
             }
         }
+
         /// <summary>
-        /// Отрисовка ячейки с информацией об объекте
+        /// Draw object area
         /// </summary>
         /// <param name="obj">Обьект для отрисовки</param>
         /// <param name="ver_i">Позиция ячейки по вертикали</param>
@@ -145,7 +206,7 @@ namespace ObjectRegistryEditor
             GUILayout.BeginArea(new Rect(_cellWidth * hor_i + horizontal_space * hor_i,
                                          _cellHeight * ver_i + vertical_space * ver_i + _menuHeight,
                                                      _cellWidth, _cellHeight),
-                                                 (_select_editor != null && obj.Equals(_select_editor)) ? RedactorStyle.BackgraundSelectItem : RedactorStyle.BackgraundItem);
+                                                 (_selectedObject != null && obj.Equals(_selectedObject)) ? RedactorStyle.BackgraundSelectItem : RedactorStyle.BackgraundItem);
 
             DrawObject(obj);
 
@@ -153,9 +214,9 @@ namespace ObjectRegistryEditor
                                     _cellHeight * ver_i + vertical_space * ver_i + _menuHeight,
                                                     _cellWidth, _cellHeight), "", RedactorStyle.Hide))
             {
-                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _clickTime < 500 && _select_editor == obj)
+                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _clickTime < 500 && _selectedObject == obj)
                 {
-                    //Двойной клик по sciptable object
+                    // Double click
                     ScriptableObject scriptableObject = obj as ScriptableObject;
                     AssetDatabase.OpenAsset(scriptableObject);
                 }
@@ -167,7 +228,7 @@ namespace ObjectRegistryEditor
         }
 
         /// <summary>
-        /// Сохранить хранилище объектов
+        /// Save changes to the registry
         /// </summary>
         private void Save() {
             if (_editableRegistry == null) return;
@@ -181,10 +242,12 @@ namespace ObjectRegistryEditor
             EditorUtility.SetDirty((ScriptableObject)_editableRegistry);
             AssetDatabase.SaveAssets();
         }
+
         public virtual void Export()
         {
 
         }
+
         /// <summary>
         /// Create new object
         /// </summary>
@@ -205,18 +268,17 @@ namespace ObjectRegistryEditor
         }
 
         /// <summary>
-        /// Выбрать этот обьект для редактирование в окне Инспектора
+        /// Select object to edit in inspector window
         /// </summary>
         /// <param name="obj"></param>
-        protected virtual void SelectObject(IDataObject obj) {
-           // if (_select_editor == null) _select_editor = ScriptableObject.CreateInstance<ObjectEditor>();
-            _select_editor = obj;
-            //Необходима для вызова отрисовки в окне инспектор
-            EditorUtility.SetDirty((ScriptableObject)_select_editor);
-            Selection.activeObject = (ScriptableObject)_select_editor;
+        protected virtual void SelectObject(IDataObject obj)
+        {
+            _selectedObject = obj;
+            Selection.activeObject = (ScriptableObject)_selectedObject;
         }
+
         /// <summary>
-        /// Отрисовать информацию о объекте
+        /// Draw object preview
         /// </summary>
         /// <param name="obj"></param>
         private void DrawObject(IDataObject obj)
@@ -225,24 +287,26 @@ namespace ObjectRegistryEditor
             Color def = GUI.contentColor;
             GUI.contentColor = Color.black;
             GUILayout.Label("ID: " + obj.ID);
-            GUILayout.Label("Имя: " + obj.Name);
+            GUILayout.Label(obj.Name);
             GUI.contentColor = def;
             GUILayout.EndArea();
         }
+
         /// <summary>
-        /// Удалить редактируемый объект в инспекторе из хранилище
+        /// Remove the selected object from the registry
         /// </summary>
-        private void RemoveSelectObject() {
-            if (_select_editor != null)
+        private void RemoveSelectObject()
+        {
+            if (_selectedObject != null)
             {
-                if (EditorUtility.DisplayDialog("Удаление предмета", "Удалить предмет ID: " + _select_editor.ID + ", Имя: " + _select_editor.Name + "?", "Да", "Нет"))
+                if (EditorUtility.DisplayDialog("Delete Item", "Delete item ID: " + _selectedObject.ID + ", Name: " + _selectedObject.Name + "?", "Yes", "No"))
                 {
-                    _editableRegistry.RemoveObject((IDataObject)_select_editor);
-                    _select_editor = null;
+                    _editableRegistry.RemoveObject((IDataObject)_selectedObject);
+                    _selectedObject = null;
                     Selection.activeObject = null;
                 }
             }
-            else EditorUtility.DisplayDialog("Удаление предмета", "Предмет не выбран", "OK");
+            else EditorUtility.DisplayDialog("Delete Item", "No item selected", "OK");
         }
 
         [OnOpenAsset(1)]
@@ -262,14 +326,13 @@ namespace ObjectRegistryEditor
                 window.LoadFromFile(assetPath);
             }
 
-
             return isObjectRegistry;
         }
 
         private void LoadFromFile(string assetPath)
         {
-            IDataObjectRegistry container = (IDataObjectRegistry)AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
-            _editableRegistry = container;
+            EditorPrefs.SetString(FILE_PATH_KEY, assetPath);
+            _editableRegistry = (IDataObjectRegistry)AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
         }
     }
 }

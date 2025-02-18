@@ -16,6 +16,7 @@ namespace ObjectRegistryEditor
         public static GUIStyle Hide { get; private set; }
         public static GUIStyle Menu { get; private set; }
         public static GUIStyle SaveOnDisk { get; private set; }
+        public static GUIStyle Refresh { get; internal set; }
         public static GUIStyle Export { get; private set; }
         public static GUIStyle Delet { get; private set; }
         public static GUIStyle Text { get; private set; }
@@ -32,8 +33,6 @@ namespace ObjectRegistryEditor
         public  static GUIStyle InPoint { get; private set; }
         public static GUIStyle OutPoint { get; private set; }
 
-
-
         static RedactorStyle()
         {
             //Create style
@@ -46,6 +45,7 @@ namespace ObjectRegistryEditor
             //create button for Menu
             Menu = CreateButtonStyle("menu");
             SaveOnDisk = CreateButtonStyle("save_on_disk", "save_on_disk_2");
+            Refresh = CreateButtonStyle("refresh_inactive", "refresh_active");
             Export = CreateButtonStyle("export", "export_active");
             Delet = CreateButtonStyle("delet", "delet2");
             Left = CreateButtonStyle("left_normal", "left_active");
@@ -53,6 +53,7 @@ namespace ObjectRegistryEditor
 
             Text = new GUIStyle();
             Text.alignment = TextAnchor.MiddleCenter;
+            Text.fontSize = 15;
 
             PlayerDialogueTitle = new GUIStyle();
             PlayerDialogueTitle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node2.png") as Texture2D;
@@ -95,21 +96,21 @@ namespace ObjectRegistryEditor
             OutPoint.border = new RectOffset(0, 0, 0, 0);
         }
 
-
         private static GUIStyle CreateButtonStyle(string _normal, string _active = null)
         {
-            GUIStyle _style = new GUIStyle();
-            if (_normal != null) _style.normal.background = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.object.registry.editor/Editor/Img/" + _normal + ".png");// Resources.Load("Editor/"+_normal) as Texture2D;
-            if (_active != null) _style.active.background = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.object.registry.editor/Editor/Img/" + _active + ".png");// Resources.Load("Editor/"+_active) as Texture2D;
-            return _style;
+            Texture2D _normalTexture = null;
+            Texture2D _activeTexture = null;
+            if (_normal != null) _normalTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.object.registry.editor/Editor/Img/" + _normal + ".png");
+            if (_active != null) _activeTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.object.registry.editor/Editor/Img/" + _active + ".png");
+            return CreateButtonStyle(_normalTexture, _activeTexture);
         }
 
- /*       private GUIStyle CreateButtonStyleUnity(string _normal, string _active = null)
+        private static GUIStyle CreateButtonStyle(Texture2D _normal, Texture2D _active = null)
         {
             GUIStyle _style = new GUIStyle();
-            if (_normal != null) _style.normal.background = EditorGUIUtility.IconContent(_normal).image as Texture2D;
-            if (_active != null) _style.active.background = EditorGUIUtility.IconContent(_active).image as Texture2D;
+            if (_normal != null) _style.normal.background = _normal;
+            if (_active != null) _style.active.background = _active;
             return _style;
-        }*/
+        }
     }
 }

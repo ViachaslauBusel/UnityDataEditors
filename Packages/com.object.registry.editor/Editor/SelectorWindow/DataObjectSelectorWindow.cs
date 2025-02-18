@@ -98,7 +98,7 @@ namespace ObjectRegistryEditor.SelectorWindow
                 //Icon
                 Texture icon = obj?.Preview != null ? obj.Preview : EditorGUIUtility.IconContent("BuildSettings.Broadcom").image;
 
-                GUILayout.Box(icon, _iconBackground, GUILayout.Width(30), GUILayout.Height(30));
+                GUILayout.Box(icon, _iconBackground, GUILayout.Width(45), GUILayout.Height(45));
                 
                 GUILayout.Label(obj.Name);
                 GUILayout.FlexibleSpace();

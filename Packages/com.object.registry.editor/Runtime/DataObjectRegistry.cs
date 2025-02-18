@@ -103,6 +103,7 @@ namespace ObjectRegistryEditor
         /// Gets the number of editable objects.
         /// </summary>
         public int Count => _objects.Count;
+        public string Name => name;
 
         /// <summary>
         /// Gets the editable object at the specified index.
