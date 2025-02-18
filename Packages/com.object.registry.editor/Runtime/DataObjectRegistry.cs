@@ -140,6 +140,8 @@ namespace ObjectRegistryEditor
         /// <returns>The object with the specified ID, or null if not found.</returns>
         public T GetObjectByID(int id) => _objects.Find(i => i.ID == id);
 
+        public int GetIndexByID(int objectId) => _objects.FindIndex(i => i.ID == objectId);
+
         public virtual void Export() { }
 #if UNITY_EDITOR
         private string GetPathToEditableObjects()
