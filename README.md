@@ -12,7 +12,7 @@
 
 1. В окне **Project Manager** нажмите **Add package from git URL**.  
 2. Вставьте ссылку в поле ввода: https://github.com/ViachaslauBusel/UnityDataEditors.git?path=/Packages/com.object.registry.editor
-![Screenshot of my project](images/package_manager.png)
+![Screenshot of my project](docs/images/package_manager.png)
 
 ## Создание классов для хранения данных
 
@@ -52,4 +52,4 @@
 Right-click → Create → Data → ItemsRegistry.
 Дважды кликните на созданный объект реестра, чтобы открыть окно управления:
 
-![Screenshot of my project](images/window.png)
+![Screenshot of my project](docs/images/window.png)
