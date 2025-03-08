@@ -1,20 +1,20 @@
-## Введение
+## Introduction
 
-Этот плагин для Unity предоставляет удобный инструмент для организации и управления данными игры. Он позволяет создавать и настраивать реестры объектов данных, а также управлять ими через пользовательский интерфейс в редакторе Unity.
+This Unity plugin provides a convenient tool for organizing and managing game data. It allows you to create and configure data object registries and manage them through a user-friendly interface in the Unity Editor.
 
-### Возможности
-- Создание реестров для различных типов объектов.
-- Управление данными через окно UI.
-- Добавление, редактирование и удаление объектов в реестре.
-- Поддержка фильтрации и сортировки данных.
+### Features
+- Create registries for various object types.
+- Manage data through a UI window.
+- Add, edit, and delete objects in the registry.
+- Support for data filtering and sorting.
 
-## Установка
+## Installation
 
-1. В окне **Project Manager** нажмите **Add package from git URL**.  
-2. Вставьте ссылку в поле ввода: https://github.com/ViachaslauBusel/UnityDataEditors.git?path=/Packages/com.object.registry.editor
+1. In the **Project Manager** window, click **Install package from git URL**.  
+2. Paste the following URL into the input field: https://github.com/ViachaslauBusel/UnityDataEditors.git?path=/Packages/com.object.registry.editor
 ![Screenshot of my project](docs/images/package_manager.png)
 
-## Создание реестра
+## Creating a Registry
 ```csharp
  [CreateAssetMenu(fileName = "ItemsRegistry", menuName = "Data/ItemsRegistry")]
  public class ItemsRegistry : DataObjectRegistry<ItemData>
@@ -22,8 +22,8 @@
  }
 ```
  
-## Создание класса для хранения данных
-Теперь создайте класс для хранения данных, реализующий интерфейс IDataObject:
+## Creating a Class to Store Data
+Now create a class to store the data, implementing the IDataObject interface:
 ```csharp
   public class ItemData : ScriptableObject, IDataObject
   {
@@ -44,8 +44,8 @@
       }
   }
 ```
-## Наследование для расширения функциональности
-Если необходимо, можно создавать подклассы для более сложных типов данных:
+## Inheritance for Extended Functionality
+If needed, you can create subclasses for more complex data types:
 ```csharp
 public class WeaponItemData : ItemData
 {
@@ -56,15 +56,15 @@ public class WeaponItemData : ItemData
 }
 ```
 
-## Использование
+## Usage
 
-Создайте экземпляр реестра через контекстное меню Unity:
+Create a registry instance through Unity’s context menu:
 Right-click → Create → Data → ItemsRegistry.
-Дважды кликните на созданный объект реестра, чтобы открыть окно управления:
+Double-click the created registry object to open the management window:
 
 ![Screenshot of my project](docs/images/window.png)
 
-## Использование в коде
+## Using in Code
 ```csharp
 public class SomeScript : MonoBehaviour
 {
