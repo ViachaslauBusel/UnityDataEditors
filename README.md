@@ -14,8 +14,6 @@
 2. Вставьте ссылку в поле ввода: https://github.com/ViachaslauBusel/UnityDataEditors.git?path=/Packages/com.object.registry.editor
 ![Screenshot of my project](docs/images/package_manager.png)
 
-## Создание классов для хранения данных
-
 ## Создание реестра
 ```csharp
  [CreateAssetMenu(fileName = "ItemsRegistry", menuName = "Data/ItemsRegistry")]
@@ -24,7 +22,7 @@
  }
 ```
  
-## Создание объектов данных
+## Создание класса для хранения данных
 Теперь создайте класс для хранения данных, реализующий интерфейс IDataObject:
 ```csharp
   public class ItemData : ScriptableObject, IDataObject
@@ -46,6 +44,17 @@
       }
   }
 ```
+## Наследование для расширения функциональности
+Если необходимо, можно создавать подклассы для более сложных типов данных:
+```csharp
+public class WeaponItemData : ItemData
+{
+    [SerializeField]
+    private int _damage;
+
+    public int Damage => _damage;
+}
+```
 
 ## Использование
 
@@ -54,3 +63,21 @@ Right-click → Create → Data → ItemsRegistry.
 Дважды кликните на созданный объект реестра, чтобы открыть окно управления:
 
 ![Screenshot of my project](docs/images/window.png)
+
+## Использование в коде
+```csharp
+public class SomeScript : MonoBehaviour
+{
+ [SerializeField]
+ private ItemsRegistry _registry;
+
+ private vois Start()
+ {
+   ItemData item = _registry.GetObjectByID(1);
+   for (int i = 0; i < _registry.Objects.Count; i++)
+   {
+      Debug.Log($"Item: {_registry.Objects[i].Name}");
+   }
+ }
+}
+```
