@@ -59,7 +59,7 @@ public class WeaponItemData : ItemData
 ## Usage
 
 Create a registry instance through Unity’s context menu:
-Right-click → Create → Data → ItemsRegistry.
+**Right-click → Create → Data → ItemsRegistry**.<br>
 Double-click the created registry object to open the management window:
 
 ![Screenshot of my project](docs/images/window.png)
