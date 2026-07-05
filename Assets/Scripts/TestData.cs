@@ -1,5 +1,6 @@
 using ObjectRegistryEditor;
 using ObjectRegistryEditor.SerializeReferenceList;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TestNamespace
@@ -15,7 +16,7 @@ namespace TestNamespace
         [SerializeField]
         private string _name;
         [SerializeField]
-        private DataLink<TestData> _dataLink;
+        private List<DataLink<TestData>> _dataLink;
         [SerializeField]
         private RefList<SimpleObjectData> _simpleObjectDataList = new RefList<SimpleObjectData>();
 

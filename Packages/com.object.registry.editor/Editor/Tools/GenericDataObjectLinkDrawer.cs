@@ -22,28 +22,78 @@ namespace ObjectRegistryEditor
                 return;
             }
 
-            if (fieldInfo == null || !fieldInfo.FieldType.IsGenericType)
+            _dataType = ResolveDataObjectType();
+            if (_dataType == null)
             {
-                _dataType = null;
                 _editableObjectLinksCache[propertyID] = null;
                 return;
             }
-
-            Type[] genericArguments = fieldInfo.FieldType.GetGenericArguments();
-            if (genericArguments == null || genericArguments.Length == 0)
-            {
-                _dataType = null;
-                _editableObjectLinksCache[propertyID] = null;
-                return;
-            }
-
-            _dataType = genericArguments[0];
 
             var allEditableObjects = AssetDatabase.FindAssets("t:" + _dataType.Name)
                 .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)
+                .Where(obj => obj != null)
                 .ToList();
 
             _editableObjectLinksCache[propertyID] = allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue);
+        }
+
+        private Type ResolveDataObjectType()
+        {
+            if (fieldInfo == null)
+            {
+                return null;
+            }
+
+            Type fieldType = fieldInfo.FieldType;
+
+            if (TryGetDataLinkTargetType(fieldType, out Type dataType))
+            {
+                return dataType;
+            }
+
+            if (fieldType.IsArray)
+            {
+                Type elementType = fieldType.GetElementType();
+                if (TryGetDataLinkTargetType(elementType, out dataType))
+                {
+                    return dataType;
+                }
+            }
+
+            if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                Type listElementType = fieldType.GetGenericArguments()[0];
+                if (TryGetDataLinkTargetType(listElementType, out dataType))
+                {
+                    return dataType;
+                }
+            }
+
+            return null;
+        }
+
+        private bool TryGetDataLinkTargetType(Type type, out Type dataType)
+        {
+            dataType = null;
+
+            if (type == null || !type.IsGenericType)
+            {
+                return false;
+            }
+
+            if (type.GetGenericTypeDefinition() != typeof(DataLink<>))
+            {
+                return false;
+            }
+
+            Type[] genericArguments = type.GetGenericArguments();
+            if (genericArguments.Length != 1)
+            {
+                return false;
+            }
+
+            dataType = genericArguments[0];
+            return true;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -86,8 +136,7 @@ namespace ObjectRegistryEditor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             float defaultHeight = base.GetPropertyHeight(property, label);
-            float extraSpace = 15;
-            return defaultHeight + extraSpace;
+            return defaultHeight + 15;
         }
     }
 }
