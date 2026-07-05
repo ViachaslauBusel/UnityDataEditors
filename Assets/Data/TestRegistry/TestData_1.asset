@@ -15,10 +15,24 @@ MonoBehaviour:
   _id: 1
   _preview: {fileID: -3604256930052969394, guid: d03ed43fc9d8a4f2e9fa70c1c7916eb9, type: 2}
   _name: test_0
+  _dataLink:
+    _id: 1
   _simpleObjectDataList:
-  - rid: -2
+    _items:
+    - rid: 5943018805684600945
+    - rid: 5943018805684600942
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5943018805684600942
+      type: {class: Test_1_SimpleObjectData, ns: TestNamespace, asm: Assembly-CSharp}
+      data:
+        _someValue: 0
+        _someString: 
+        _dataLink:
+          _id: 2
+    - rid: 5943018805684600945
+      type: {class: Test_2_SimpleObjectData, ns: TestNamespace, asm: Assembly-CSharp}
+      data:
+        _someValue: 0
+        _someString: 
