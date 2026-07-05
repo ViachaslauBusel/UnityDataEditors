@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using ObjectRegistryEditor.Helpers;
 using ObjectRegistryEditor.SelectorWindow;
+using ObjectRegistryEditor.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -253,18 +254,26 @@ namespace ObjectRegistryEditor
         /// </summary>
         private void CreateObject()
         {
-            var findType = _editableRegistry.GetObjectType();
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                                               .SelectMany(i => i.GetTypes())
-                                               .Where(i => findType.IsAssignableFrom(i) && i.IsClass && !i.IsAbstract)
-                                               .ToList();
+            Type baseType = _editableRegistry.GetObjectType();
+            IReadOnlyList<Type> types = CreatableTypeSearchService.GetCreatableTypes(baseType);
 
-            if(types.Count == 1)
+            if (types.Count == 0)
             {
-                var obj = _editableRegistry.AddObjectOfType(types[0]);
-                SelectObject(obj);
+                EditorUtility.DisplayDialog("Create Item", $"Types derived from {baseType.Name} were not found.", "OK");
+                return;
             }
-            else ClassSelectorWindow.Display(_editableRegistry, types, obj => SelectObject(obj));
+
+            if (types.Count == 1)
+            {
+                IDataObject obj = _editableRegistry.AddObjectOfType(types[0]);
+                SelectObject(obj);
+                return;
+            }
+
+            ClassSelectorWindow.Display<IDataObject>(
+                baseType,
+                type => _editableRegistry.AddObjectOfType(type),
+                SelectObject);
         }
 
         /// <summary>

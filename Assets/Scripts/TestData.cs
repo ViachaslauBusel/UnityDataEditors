@@ -1,7 +1,5 @@
 using ObjectRegistryEditor;
-using ObjectRegistryEditor.SelectorWindow;
-using System.Collections;
-using System.Collections.Generic;
+using ObjectRegistryEditor.SerializeReferenceList;
 using UnityEngine;
 
 namespace TestNamespace
@@ -16,12 +14,15 @@ namespace TestNamespace
         private Texture _preview;
         [SerializeField]
         private string _name;
+        [SerializeField]
+        private DataLink<TestData> _dataLink;
+        [SerializeField]
+        private RefList<SimpleObjectData> _simpleObjectDataList = new RefList<SimpleObjectData>();
 
         public int ID => _id;
-
         public string Name => _name;
-
         public Texture Preview => _preview;
+        public RefList<SimpleObjectData> SimpleObjectDataList => _simpleObjectDataList;
 
         public void Initialize(int iD)
         {

@@ -14,46 +14,79 @@ namespace ObjectRegistryEditor
 
         protected virtual void InitializeEditableObject(SerializedProperty property, string propertyID)
         {
-            var idProperty = property.FindPropertyRelative("_id");
-            Type parentType = property.serializedObject.targetObject.GetType();
-            Type fieldType =  ReflectionUtility.FindPropertyType(parentType, property.propertyPath);
-            _dataType = fieldType.GetGenericArguments()[0];
+            SerializedProperty idProperty = property.FindPropertyRelative("_id");
+            if (idProperty == null)
+            {
+                _dataType = null;
+                _editableObjectLinksCache[propertyID] = null;
+                return;
+            }
+
+            if (fieldInfo == null || !fieldInfo.FieldType.IsGenericType)
+            {
+                _dataType = null;
+                _editableObjectLinksCache[propertyID] = null;
+                return;
+            }
+
+            Type[] genericArguments = fieldInfo.FieldType.GetGenericArguments();
+            if (genericArguments == null || genericArguments.Length == 0)
+            {
+                _dataType = null;
+                _editableObjectLinksCache[propertyID] = null;
+                return;
+            }
+
+            _dataType = genericArguments[0];
 
             var allEditableObjects = AssetDatabase.FindAssets("t:" + _dataType.Name)
-                                                  .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)
-                                                  .ToList();
+                .Select(guid => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), _dataType) as IDataObject)
+                .ToList();
 
             _editableObjectLinksCache[propertyID] = allEditableObjects.FirstOrDefault(x => x.ID == idProperty.intValue);
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var DataIdfield = property.FindPropertyRelative("_id");
-            var datId = DataIdfield.intValue;
+            SerializedProperty dataIdField = property.FindPropertyRelative("_id");
             string propertyId = property.propertyPath;
-            if (!_editableObjectLinksCache.ContainsKey(propertyId) || (_editableObjectLinksCache[propertyId] != null && _editableObjectLinksCache[propertyId].ID != datId))
+
+            if (!_editableObjectLinksCache.ContainsKey(propertyId) ||
+                (_editableObjectLinksCache[propertyId] != null && dataIdField != null && _editableObjectLinksCache[propertyId].ID != dataIdField.intValue))
             {
                 InitializeEditableObject(property, propertyId);
             }
 
-            DataObjectGUIRenderer.DrawDataObject(position, property, label, _editableObjectLinksCache[propertyId], _dataType, (obj) => SelectObject(obj, property, propertyId, DataIdfield));
+            if (_dataType == null)
+            {
+                EditorGUI.LabelField(position, label.text, "Unsupported field");
+                return;
+            }
+
+            DataObjectGUIRenderer.DrawDataObject(
+                position,
+                property,
+                label,
+                _editableObjectLinksCache[propertyId],
+                _dataType,
+                obj => SelectObject(obj, property, propertyId, dataIdField));
         }
 
-        private void SelectObject(IDataObject dataObject, SerializedProperty property, string propertyId, SerializedProperty DataIdfield)
+        private void SelectObject(IDataObject dataObject, SerializedProperty property, string propertyId, SerializedProperty dataIdField)
         {
             _editableObjectLinksCache[propertyId] = dataObject;
-            DataIdfield.intValue = dataObject?.ID ?? 0;
+            if (dataIdField != null)
+            {
+                dataIdField.intValue = dataObject?.ID ?? 0;
+            }
+
             property.serializedObject.ApplyModifiedProperties();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            // Calculate the default property height
             float defaultHeight = base.GetPropertyHeight(property, label);
-
-            // Add extra space
-            float extraSpace = 15; // Adjust this value as needed
-
+            float extraSpace = 15;
             return defaultHeight + extraSpace;
         }
     }

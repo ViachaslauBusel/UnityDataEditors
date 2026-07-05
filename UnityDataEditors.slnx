@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="ObjectRegistry.Editor.csproj" />
+  <Project Path="ObjectRegistry.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+</Solution>

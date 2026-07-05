@@ -15,3 +15,10 @@ MonoBehaviour:
   _id: 1
   _preview: {fileID: -3604256930052969394, guid: d03ed43fc9d8a4f2e9fa70c1c7916eb9, type: 2}
   _name: test_0
+  _simpleObjectDataList:
+  - rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
